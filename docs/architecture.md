@@ -81,20 +81,25 @@ classDiagram
 
     %% ---------- Services (🕓 jalons suivants) ----------
     class StorageService {
-        <<🕓 Jalon 2>>
-        +get(key) Promise
-        +set(key, value) Promise
+        <<✅ Jalon 2>>
+        +getJson(key) Promise~T~
+        +setJson(key, value) Promise
+        +remove(key) Promise
     }
     class ConfigService {
-        <<🕓 Jalon 2>>
+        <<✅ Jalon 2>>
         +config: Signal~AppConfig~
-        +update(patch) void
+        +load() Promise
+        +update(patch) Promise
+        +reset() Promise
     }
     class LedgerService {
-        <<🕓 Jalon 3>>
+        <<✅ Jalon 3>>
         +entries: Signal~LedgerEntry[]~
         +balance: Signal~number~
-        +add(entry) void
+        +load() Promise
+        +add(entry) Promise~LedgerEntry~
+        +clear() Promise
     }
     class MultiplierService {
         <<🕓 Jalon 4>>
@@ -106,11 +111,13 @@ classDiagram
         +isBonusUnlocked() boolean
     }
     class TimerService {
-        <<🕓 Jalon 3>>
+        <<✅ Jalon 3>>
         +running: Signal~boolean~
         +elapsedSec: Signal~number~
-        +start(kind) void
-        +stop() void
+        +elapsedMin: Signal~number~
+        +start() void
+        +stop() number
+        +reset() void
     }
 
     ConfigService ..> StorageService

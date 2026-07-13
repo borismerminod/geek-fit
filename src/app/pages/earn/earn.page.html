@@ -5,5 +5,72 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
-  <p>Chrono sport, saisie manuelle, activités bonus et tableau (à venir).</p>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>Solde disponible</ion-card-subtitle>
+      <ion-card-title>{{ balance() }} pts</ion-card-title>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>Chrono sport</ion-card-subtitle>
+      <ion-card-title>{{ display() }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-button
+        expand="block"
+        [color]="running() ? 'danger' : 'success'"
+        (click)="toggleTimer()"
+      >
+        <ion-icon slot="start" [name]="running() ? 'stop-outline' : 'play-outline'"></ion-icon>
+        {{ running() ? 'Arrêter et enregistrer' : 'Démarrer' }}
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>Saisie manuelle</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item lines="none">
+        <ion-input
+          label="Durée (minutes)"
+          labelPlacement="stacked"
+          type="number"
+          min="1"
+          step="1"
+          placeholder="ex. 30"
+          [(ngModel)]="manualMinutes"
+        ></ion-input>
+      </ion-item>
+      <ion-button expand="block" fill="outline" (click)="addManual()">
+        <ion-icon slot="start" name="add-outline"></ion-icon>
+        Ajouter la séance
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-list>
+    <ion-item lines="none">
+      <ion-label>
+        <h2>Séances récentes</h2>
+      </ion-label>
+    </ion-item>
+
+    @for (entry of recentSport(); track entry.id) {
+      <ion-item>
+        <ion-label>
+          <h3>{{ entry.label }}</h3>
+          <p>{{ entry.durationMin }} min · {{ entry.timestamp | date: 'short' }}</p>
+        </ion-label>
+        <ion-note slot="end" color="success">+{{ entry.points }} pts</ion-note>
+      </ion-item>
+    } @empty {
+      <ion-item lines="none">
+        <ion-note color="medium">Aucune séance enregistrée pour l’instant.</ion-note>
+      </ion-item>
+    }
+  </ion-list>
 </ion-content>

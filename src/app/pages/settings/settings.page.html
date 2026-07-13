@@ -4,6 +4,100 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-padding">
-  <p>Paramétrage des taux, du multiplicateur, des activités et récompenses (à venir).</p>
+<ion-content [fullscreen]="true">
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Gains</ion-label>
+    </ion-list-header>
+
+    <ion-item>
+      <ion-input
+        label="Points par minute de sport"
+        labelPlacement="stacked"
+        type="number"
+        min="0"
+        step="0.1"
+        [(ngModel)]="form.sportRate"
+      ></ion-input>
+    </ion-item>
+
+    <ion-list-header>
+      <ion-label>Multiplicateur progressif</ion-label>
+    </ion-list-header>
+
+    <ion-item>
+      <ion-select
+        label="Stratégie"
+        labelPlacement="stacked"
+        interface="popover"
+        [(ngModel)]="form.multiplierStrategy"
+      >
+        <ion-select-option value="calendar">Calendaire (reset chaque lundi)</ion-select-option>
+        <ion-select-option value="cumulative">Cumulative (chaîne de séances)</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    @if (form.multiplierStrategy === 'calendar') {
+      <ion-item>
+        <ion-toggle [(ngModel)]="capUnlimited">Plafond illimité</ion-toggle>
+      </ion-item>
+      @if (!capUnlimited) {
+        <ion-item>
+          <ion-input
+            label="Plafond du multiplicateur (×)"
+            labelPlacement="stacked"
+            type="number"
+            min="1"
+            step="1"
+            [(ngModel)]="capValue"
+          ></ion-input>
+        </ion-item>
+      }
+    }
+
+    @if (form.multiplierStrategy === 'cumulative') {
+      <ion-item>
+        <ion-input
+          label="Séances max dans la chaîne"
+          labelPlacement="stacked"
+          type="number"
+          min="1"
+          step="1"
+          [(ngModel)]="form.cumulative.maxSessions"
+        ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input
+          label="Écart max entre séances (jours)"
+          labelPlacement="stacked"
+          type="number"
+          min="1"
+          step="1"
+          [(ngModel)]="form.cumulative.maxGapDays"
+        ></ion-input>
+      </ion-item>
+    }
+
+    <ion-list-header>
+      <ion-label>Solde</ion-label>
+    </ion-list-header>
+
+    <ion-item>
+      <ion-toggle [(ngModel)]="form.allowNegativeBalance">Autoriser le solde négatif</ion-toggle>
+    </ion-item>
+  </ion-list>
+
+  <ion-note color="medium" class="ion-margin">
+    <p>
+      Les activités bonus, les activités spéciales (tableau), les activités de dépense et les
+      récompenses seront configurables ici dans les prochains jalons.
+    </p>
+  </ion-note>
+
+  <div class="ion-padding">
+    <ion-button expand="block" (click)="save()">Enregistrer</ion-button>
+    <ion-button expand="block" fill="clear" color="medium" (click)="reset()">
+      Réinitialiser
+    </ion-button>
+  </div>
 </ion-content>
