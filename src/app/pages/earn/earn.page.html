@@ -18,6 +18,9 @@
       <ion-card-title>{{ display() }}</ion-card-title>
     </ion-card-header>
     <ion-card-content>
+      <ion-note class="next-mult" color="primary">
+        Prochaine séance : <strong>×{{ nextMultiplier() }}</strong>
+      </ion-note>
       <ion-button
         expand="block"
         [color]="running() ? 'danger' : 'success'"

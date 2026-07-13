@@ -26,6 +26,7 @@ import { addOutline, playOutline, stopOutline } from 'ionicons/icons';
 import { sportPoints } from '../../core/logic/points';
 import { ConfigService } from '../../core/services/config.service';
 import { LedgerService } from '../../core/services/ledger.service';
+import { MultiplierService } from '../../core/services/multiplier.service';
 import { TimerService } from '../../core/services/timer.service';
 
 @Component({
@@ -55,12 +56,18 @@ import { TimerService } from '../../core/services/timer.service';
 export class EarnPage {
   private readonly config = inject(ConfigService);
   private readonly ledger = inject(LedgerService);
+  private readonly multiplier = inject(MultiplierService);
   private readonly toast = inject(ToastController);
   readonly timer = inject(TimerService);
 
   readonly balance = this.ledger.balance;
   readonly running = this.timer.running;
   readonly display = computed(() => this.formatClock(this.timer.elapsedSec()));
+
+  /** Multiplicateur qui s'appliquera à la prochaine séance. */
+  readonly nextMultiplier = computed(() =>
+    this.multiplier.nextSportMultiplier(this.ledger.entries(), this.config.config()),
+  );
 
   /** Les 5 dernières séances de sport, de la plus récente à la plus ancienne. */
   readonly recentSport = computed(() =>
@@ -101,8 +108,7 @@ export class EarnPage {
 
   private async logSport(minutes: number, label: string): Promise<void> {
     const rate = this.config.config().sportRate;
-    // Multiplicateur figé à 1 pour l'instant ; branché au Jalon 4 (MultiplierService).
-    const multiplier = 1;
+    const multiplier = this.multiplier.nextSportMultiplier(this.ledger.entries(), this.config.config());
     const points = sportPoints(minutes, rate, multiplier);
     await this.ledger.add({
       kind: 'sport',
@@ -111,7 +117,7 @@ export class EarnPage {
       multiplier,
       points,
     });
-    await this.presentToast(`Séance enregistrée : +${points} pts`, 'success');
+    await this.presentToast(`Séance enregistrée : +${points} pts (×${multiplier})`, 'success');
   }
 
   private formatClock(totalSec: number): string {

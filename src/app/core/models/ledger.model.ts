@@ -1,5 +1,14 @@
-/** Nature d'une entrée du journal (gain ou dépense). */
-export type LedgerKind = 'sport' | 'bonus' | 'special' | 'spend-time' | 'spend-reward';
+/**
+ * Nature d'une entrée du journal.
+ * `multiplier-reset` est un marqueur (points = 0) qui remet le multiplicateur au plus bas.
+ */
+export type LedgerKind =
+  | 'sport'
+  | 'bonus'
+  | 'special'
+  | 'spend-time'
+  | 'spend-reward'
+  | 'multiplier-reset';
 
 /**
  * Entrée du journal d'opérations : unique source de vérité du solde.

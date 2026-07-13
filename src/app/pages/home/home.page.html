@@ -1,9 +1,58 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Accueil</ion-title>
+    <ion-title>Geek-Fit</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
-  <p>Solde, progression hebdo et multiplicateur (à venir).</p>
+  <ion-card color="primary">
+    <ion-card-header>
+      <ion-card-subtitle>Solde disponible</ion-card-subtitle>
+      <ion-card-title class="balance">{{ balance() }} pts</ion-card-title>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>Multiplicateur progressif</ion-card-subtitle>
+      <ion-card-title>Prochaine séance : ×{{ nextMultiplier() }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-chip color="success">Séances cette semaine : {{ sportThisWeek() }}</ion-chip>
+      <ion-chip color="medium">Niveau actuel : ×{{ currentMultiplier() }}</ion-chip>
+
+      <ion-button
+        fill="outline"
+        size="small"
+        color="medium"
+        class="reset-mult"
+        (click)="resetMultiplier()"
+      >
+        <ion-icon slot="start" name="refresh-outline"></ion-icon>
+        Réinitialiser le multiplicateur
+      </ion-button>
+
+      <ion-note color="medium">
+        @if (strategy() === 'calendar') {
+          <p>
+            Stratégie calendaire : chaque séance de la semaine augmente le multiplicateur
+            (×1, ×2, ×3…). Remise à zéro chaque lundi.
+          </p>
+        } @else {
+          <p>
+            Stratégie cumulative : enchaîne des séances rapprochées pour faire grimper le
+            multiplicateur. La chaîne repart à ×1 après une pause trop longue ou une fois complète.
+          </p>
+        }
+      </ion-note>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-list lines="none">
+    <ion-item>
+      <ion-label>
+        <p>Fais du sport pour gonfler ton multiplicateur, puis dépense tes points sur ce que tu aimes. 💪</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>

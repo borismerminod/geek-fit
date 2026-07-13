@@ -50,13 +50,17 @@ export class SettingsPage {
   form: AppConfig = structuredClone(this.configService.config());
   capUnlimited = this.form.calendar.cap === null;
   capValue = this.form.calendar.cap ?? 3;
+  incrementValue = this.form.calendar.increment ?? 1;
 
   async save(): Promise<void> {
     const f = this.form;
     await this.configService.update({
       sportRate: Number(f.sportRate),
       multiplierStrategy: f.multiplierStrategy,
-      calendar: { cap: this.capUnlimited ? null : Number(this.capValue) },
+      calendar: {
+        cap: this.capUnlimited ? null : Number(this.capValue),
+        increment: Number(this.incrementValue),
+      },
       cumulative: {
         maxSessions: Number(f.cumulative.maxSessions),
         maxGapDays: Number(f.cumulative.maxGapDays),
@@ -71,6 +75,7 @@ export class SettingsPage {
     this.form = structuredClone(this.configService.config());
     this.capUnlimited = this.form.calendar.cap === null;
     this.capValue = this.form.calendar.cap ?? 3;
+    this.incrementValue = this.form.calendar.increment ?? 1;
     await this.presentToast('Réglages réinitialisés', 'medium');
   }
 

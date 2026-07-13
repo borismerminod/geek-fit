@@ -9,6 +9,8 @@ export type MultiplierStrategy = 'calendar' | 'cumulative';
 export interface CalendarConfig {
   /** Plafond du multiplicateur (`null` = illimité). */
   cap: number | null;
+  /** Pas d'incrémentation entre deux séances (×1, ×1+inc, ×1+2·inc…). */
+  increment: number;
 }
 
 /** Paramètres de la stratégie cumulative (chaîne de séances). */
@@ -104,7 +106,7 @@ export const DEFAULT_COLUMNS: BoardColumn[] = [
 export const DEFAULT_CONFIG: AppConfig = {
   sportRate: 1,
   multiplierStrategy: 'calendar',
-  calendar: { cap: null },
+  calendar: { cap: null, increment: 1 },
   cumulative: { maxSessions: 3, maxGapDays: 3 },
   bonusActivities: [],
   specialActivities: [],

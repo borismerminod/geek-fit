@@ -46,6 +46,18 @@ describe('ConfigService', () => {
     expect(service.config().calendar).toEqual(DEFAULT_CONFIG.calendar);
   });
 
+  it('load complète les sous-objets (calendar sans increment)', async () => {
+    await Preferences.set({
+      key: CONFIG_KEY,
+      value: JSON.stringify({ ...DEFAULT_CONFIG, calendar: { cap: 5 } }),
+    });
+
+    await service.load();
+
+    expect(service.config().calendar.cap).toBe(5);
+    expect(service.config().calendar.increment).toBe(DEFAULT_CONFIG.calendar.increment);
+  });
+
   it('reset restaure la config par défaut et persiste', async () => {
     await service.update({ sportRate: 9 });
 

@@ -39,6 +39,16 @@
 
     @if (form.multiplierStrategy === 'calendar') {
       <ion-item>
+        <ion-input
+          label="Incrément par séance (×)"
+          labelPlacement="stacked"
+          type="number"
+          min="0"
+          step="0.5"
+          [(ngModel)]="incrementValue"
+        ></ion-input>
+      </ion-item>
+      <ion-item>
         <ion-toggle [(ngModel)]="capUnlimited">Plafond illimité</ion-toggle>
       </ion-item>
       @if (!capUnlimited) {

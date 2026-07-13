@@ -102,9 +102,16 @@ classDiagram
         +clear() Promise
     }
     class MultiplierService {
-        <<🕓 Jalon 4>>
-        +nextSportMultiplier(entries, cfg) number
-        +currentSportMultiplier(entries, cfg) number
+        <<✅ Jalon 4>>
+        +nextSportMultiplier(entries, cfg, now) number
+        +currentSportMultiplier(entries, cfg, now) number
+        +sportSessionsThisWeek(entries, now) number
+    }
+    class multiplier {
+        <<module pur · ✅ Jalon 4>>
+        +nextSportMultiplier(entries, cfg, now) number
+        +currentSportMultiplier(entries, cfg, now) number
+        +sportSessionsThisWeek(entries, now) number
     }
     class EligibilityService {
         <<🕓 Jalon 5>>
@@ -125,8 +132,9 @@ classDiagram
     LedgerService ..> StorageService
     LedgerService ..> LedgerEntry
     LedgerService ..> points
-    MultiplierService ..> AppConfig
-    MultiplierService ..> LedgerEntry
+    MultiplierService ..> multiplier
+    multiplier ..> AppConfig
+    multiplier ..> LedgerEntry
     EligibilityService ..> LedgerService
     TimerService ..> LedgerService
     TimerService ..> points
@@ -146,3 +154,12 @@ classDiagram
 
 Bootstrap **standalone** (`bootstrapApplication`) + `provideIonicAngular()` +
 `provideRouter()` avec lazy `loadComponent`. État applicatif via **signals** (pas de NgRx).
+
+## Notes de modèle
+
+- `CalendarConfig = { cap: number | null, increment: number }` — l'**incrément** (défaut 1)
+  paramètre le pas du multiplicateur calendaire : ×1, ×(1+inc), ×(1+2·inc)…
+- `LedgerKind` inclut `multiplier-reset` : marqueur (points = 0) posé dans le journal pour
+  **réinitialiser le multiplicateur** au plus bas. Le multiplicateur **et** le compteur
+  « séances cette semaine » (`sportSessionsThisWeek`) n'utilisent que les séances de sport
+  **postérieures** au dernier marqueur de reset — un reset repart donc « de zéro pour la semaine ».

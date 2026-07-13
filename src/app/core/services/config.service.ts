@@ -22,7 +22,15 @@ export class ConfigService {
   async load(): Promise<void> {
     const stored = await this.storage.getJson<Partial<AppConfig>>(CONFIG_KEY);
     if (stored) {
-      this._config.set({ ...structuredClone(DEFAULT_CONFIG), ...stored });
+      const base = structuredClone(DEFAULT_CONFIG);
+      this._config.set({
+        ...base,
+        ...stored,
+        // Fusion profonde des sous-objets pour rester compatible avec d'anciennes configs.
+        calendar: { ...base.calendar, ...(stored.calendar ?? {}) },
+        cumulative: { ...base.cumulative, ...(stored.cumulative ?? {}) },
+        board: stored.board ?? base.board,
+      });
     }
   }
 
